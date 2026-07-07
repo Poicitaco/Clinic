@@ -1,60 +1,60 @@
 # ClinicManagement
 
-Huong dan setup va chay project tren Visual Studio.
+Hướng dẫn thiết lập và chạy project trên Visual Studio.
 
-## Yeu cau
+## Yêu cầu
 
-- Visual Studio co workload `.NET desktop development`
+- Visual Studio có workload `.NET desktop development`
 - .NET Framework 4.7.2 Developer Pack
-- MySQL Server dang chay o port `3306`
+- MySQL Server đang chạy ở cổng `3306`
 
-## Setup database
+## Thiết lập database
 
-1. Tao database:
+1. Tạo database:
 
 ```sql
 CREATE DATABASE clinicmanagement CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-2. Import database mau:
+2. Import database mẫu:
 
 ```powershell
 mysql -u root -p clinicmanagement < db_backups\clinicmanagement_sample_20260707_093813.sql
 ```
 
-Neu muon dung backup cu hon:
+Nếu muốn dùng bản backup cũ hơn:
 
 ```powershell
 mysql -u root -p clinicmanagement < db_backups\clinicmanagement_before_c3_dataset_20260706_062028.sql
 ```
 
-## Cau hinh ket noi database
+## Cấu hình kết nối database
 
-Mo file:
+Mở file:
 
 ```text
 ClinicManagement.UI\App.config
 ```
 
-Kiem tra connection string:
+Kiểm tra connection string:
 
 ```xml
 server=localhost;port=3306;database=clinicmanagement;uid=root;password=Itentad@1;
 ```
 
-Neu MySQL tren may ban dung password khac, sua lai `password=...`.
+Nếu MySQL trên máy bạn dùng mật khẩu khác, sửa lại phần `password=...`.
 
-## Chay tren Visual Studio
+## Chạy trên Visual Studio
 
-1. Mo `ClinicManagement.slnx` bang Visual Studio.
-2. Set `ClinicManagement.UI` lam Startup Project.
-3. Chon `Debug` configuration.
+1. Mở `ClinicManagement.slnx` bằng Visual Studio.
+2. Set `ClinicManagement.UI` làm Startup Project.
+3. Chọn cấu hình `Debug`.
 4. Build solution.
-5. Bam `Start` de chay ung dung.
+5. Bấm `Start` để chạy ứng dụng.
 
-Khong dung `dotnet build` cho project WPF .NET Framework nay.
+Không dùng `dotnet build` cho project WPF .NET Framework này.
 
-Lenh MSBuild dung neu can build bang terminal:
+Lệnh MSBuild đúng nếu cần build bằng terminal:
 
 ```powershell
 "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe" ClinicManagement.UI\ClinicManagement.UI.csproj /t:Rebuild /p:Configuration=Debug
