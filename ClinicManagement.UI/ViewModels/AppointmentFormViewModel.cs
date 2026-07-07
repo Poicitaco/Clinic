@@ -116,6 +116,7 @@ namespace ClinicManagement.UI.ViewModels
             AppointmentDate = appointment.StartTime.Date;
             AppointmentTime = DateTime.Today.Add(appointment.StartTime.TimeOfDay);
             Status = appointment.Status;
+            Notes = appointment.Notes;
 
             SaveCommand = new RelayCommand(param => Save(param as Window));
         }
@@ -142,7 +143,8 @@ namespace ClinicManagement.UI.ViewModels
                     DentistId = SelectedDentist.Id,
                     StartTime = startTime,
                     EndTime = endTime,
-                    Status = Status
+                    Status = Status,
+                    Notes = Notes
                 };
 
                 if (_isEditMode)

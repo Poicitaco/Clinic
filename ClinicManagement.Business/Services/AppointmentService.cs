@@ -71,6 +71,7 @@ namespace ClinicManagement.Business.Services
                 existing.StartTime = appointment.StartTime;
                 existing.EndTime = appointment.EndTime;
                 existing.Status = appointment.Status;
+                existing.Notes = appointment.Notes;
                 
                 _unitOfWork.Complete();
             }

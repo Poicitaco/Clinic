@@ -21,6 +21,8 @@ namespace ClinicManagement.Core
 
         public AppointmentStatus Status { get; set; }
 
+        public string Notes { get; set; }
+
         public int? CreatedById { get; set; }
         public virtual Employee CreatedBy { get; set; }
     }

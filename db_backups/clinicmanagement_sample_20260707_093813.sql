@@ -32,6 +32,7 @@ CREATE TABLE `appointments` (
   `StartTime` datetime NOT NULL,
   `EndTime` datetime NOT NULL,
   `Status` int NOT NULL,
+  `Notes` longtext,
   `CreatedById` int DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `IX_DentistId` (`DentistId`),
@@ -283,14 +284,14 @@ INSERT INTO `accounts` (`Id`, `Username`, `PasswordHash`, `IsActive`, `EmployeeI
 INSERT INTO `accounts` (`Id`, `Username`, `PasswordHash`, `IsActive`, `EmployeeId`, `PasswordResetTokenHash`, `PasswordResetTokenExpiresAt`) VALUES (9, 'dentist4@clinic.com', '$2a$11$MOA8ABYDKVAsxAPhZQ/l2OE1TkSJznSWUx4aAqwx/jC6QU3BGe0fm', 1, 9, NULL, NULL);
 INSERT INTO `accounts` (`Id`, `Username`, `PasswordHash`, `IsActive`, `EmployeeId`, `PasswordResetTokenHash`, `PasswordResetTokenExpiresAt`) VALUES (10, 'e2euitest20260707@clinic.com', '$2a$11$DvKC.rjVkt7lmjpLCTgZZ.Nsu76Tx/l4olGl4PTgrHaImRPJuSkWe', 1, 0, NULL, NULL);
 
-INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `CreatedById`) VALUES (1, 'Bệnh nhân Lê Văn C', '0999888777', 3, '2026-07-06 09:00:00', '2026-07-06 10:00:00', 1, 4);
-INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `CreatedById`) VALUES (2, 'Bệnh nhân Phạm Thị D', '0888777666', 3, '2026-07-06 11:00:00', '2026-07-06 12:00:00', 2, 4);
-INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `CreatedById`) VALUES (3, 'Smoke Test Patient', '0123456799', 3, '2026-07-07 10:00:00', '2026-07-07 11:00:00', 1, NULL);
-INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `CreatedById`) VALUES (4, 'Smoke Test Patient', '0123456799', 3, '2026-07-07 10:00:00', '2026-07-07 11:00:00', 1, NULL);
-INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `CreatedById`) VALUES (5, 'C3_UI_TEST_20260706_0620 Patient New Invoice', '0906200001', 3, '2026-07-06 14:00:00', '2026-07-06 15:00:00', 2, 4);
-INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `CreatedById`) VALUES (6, 'C3_UI_TEST_20260706_0620 Patient Already Invoiced', '0906200002', 3, '2026-07-06 15:30:00', '2026-07-06 16:30:00', 2, 4);
-INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `CreatedById`) VALUES (7, 'C3_UI_TEST_20260706_0627 Patient Detail Amount', '0906270001', 3, '2026-07-06 17:00:00', '2026-07-06 18:00:00', 2, 4);
-INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `CreatedById`) VALUES (8, 'Ete Ui Patient', '0911110707', 3, '2026-07-07 08:00:00', '2026-07-07 09:00:00', 1, 1);
+INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `Notes`, `CreatedById`) VALUES (1, 'Bệnh nhân Lê Văn C', '0999888777', 3, '2026-07-06 09:00:00', '2026-07-06 10:00:00', 1, 'Nhắc bệnh nhân đến trước 10 phút để xác nhận thông tin.', 4);
+INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `Notes`, `CreatedById`) VALUES (2, 'Bệnh nhân Phạm Thị D', '0888777666', 3, '2026-07-06 11:00:00', '2026-07-06 12:00:00', 2, 'Đã hoàn thành lịch hẹn, chờ tạo hồ sơ điều trị nếu cần.', 4);
+INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `Notes`, `CreatedById`) VALUES (3, 'Smoke Test Patient', '0123456799', 3, '2026-07-07 10:00:00', '2026-07-07 11:00:00', 1, 'Nhắc bệnh nhân đến trước 10 phút để xác nhận thông tin.', NULL);
+INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `Notes`, `CreatedById`) VALUES (4, 'Smoke Test Patient', '0123456799', 3, '2026-07-07 10:00:00', '2026-07-07 11:00:00', 1, 'Nhắc bệnh nhân đến trước 10 phút để xác nhận thông tin.', NULL);
+INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `Notes`, `CreatedById`) VALUES (5, 'C3_UI_TEST_20260706_0620 Patient New Invoice', '0906200001', 3, '2026-07-06 14:00:00', '2026-07-06 15:00:00', 2, 'Đã hoàn thành lịch hẹn, chờ tạo hồ sơ điều trị nếu cần.', 4);
+INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `Notes`, `CreatedById`) VALUES (6, 'C3_UI_TEST_20260706_0620 Patient Already Invoiced', '0906200002', 3, '2026-07-06 15:30:00', '2026-07-06 16:30:00', 2, 'Đã hoàn thành lịch hẹn, chờ tạo hồ sơ điều trị nếu cần.', 4);
+INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `Notes`, `CreatedById`) VALUES (7, 'C3_UI_TEST_20260706_0627 Patient Detail Amount', '0906270001', 3, '2026-07-06 17:00:00', '2026-07-06 18:00:00', 2, 'Đã hoàn thành lịch hẹn, chờ tạo hồ sơ điều trị nếu cần.', 4);
+INSERT INTO `appointments` (`Id`, `PatientName`, `PhoneNumber`, `DentistId`, `StartTime`, `EndTime`, `Status`, `Notes`, `CreatedById`) VALUES (8, 'Ete Ui Patient', '0911110707', 3, '2026-07-07 08:00:00', '2026-07-07 09:00:00', 1, 'Nhắc bệnh nhân đến trước 10 phút để xác nhận thông tin.', 1);
 
 INSERT INTO `dentistdegreesalarycoefficients` (`Id`, `SalaryConfigurationId`, `Degree`, `Coefficient`) VALUES (1, 1, 1, 1.00);
 INSERT INTO `dentistdegreesalarycoefficients` (`Id`, `SalaryConfigurationId`, `Degree`, `Coefficient`) VALUES (2, 1, 2, 1.00);

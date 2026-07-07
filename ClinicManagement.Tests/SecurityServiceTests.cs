@@ -238,6 +238,24 @@ namespace ClinicManagement.Tests
         }
 
         [TestMethod]
+        public void AppointmentService_UpdateAppointment_SavesNotes()
+        {
+            UserContext.CurrentUser = new Employee { Id = 2, Role = EmployeeRole.Receptionist };
+            var service = new AppointmentService(_fakeUow);
+            var date = DateTime.Today.AddDays(1);
+            SeedDentistWorkShift(1, date);
+            _fakeUow.Appointments.Add(CreateValidAppointment(date.AddHours(9)));
+
+            var appointment = CreateValidAppointment(date.AddHours(10));
+            appointment.Id = 1;
+            appointment.Notes = "Benh nhan can tu van ky truoc khi dieu tri.";
+
+            service.UpdateAppointment(appointment);
+
+            Assert.AreEqual("Benh nhan can tu van ky truoc khi dieu tri.", _fakeUow.Appointments.GetById(1).Notes);
+        }
+
+        [TestMethod]
         public void AppointmentService_CancelAppointment_Completed_ThrowsException()
         {
             UserContext.CurrentUser = new Employee { Id = 2, Role = EmployeeRole.Receptionist };

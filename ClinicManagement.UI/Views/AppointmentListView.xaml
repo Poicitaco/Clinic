@@ -54,6 +54,7 @@
                     <DataGridTextColumn Header="BỆNH NHÂN" Binding="{Binding PatientName}" Width="*" FontWeight="SemiBold" Foreground="#0F172A"/>
                     <DataGridTextColumn Header="NHA SĨ" Binding="{Binding Dentist.FullName}" Width="*"/>
                     <DataGridTextColumn Header="THỜI GIAN" Binding="{Binding StartTime, StringFormat=dd/MM/yyyy HH:mm}" Width="*"/>
+                    <DataGridTextColumn Header="GHI CHÚ" Binding="{Binding Notes}" Width="*"/>
                     
                     <DataGridTemplateColumn Header="TRẠNG THÁI" Width="120">
                         <DataGridTemplateColumn.CellTemplate>

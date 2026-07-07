@@ -118,6 +118,7 @@
     </Compile>
     <Compile Include="Migrations\202607061000000_AddMedicalRecordFields.cs" />
     <Compile Include="Migrations\202607062100000_AddPasswordResetFields.cs" />
+    <Compile Include="Migrations\202607080140000_AddAppointmentNotes.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Repositories\Repository.cs" />
