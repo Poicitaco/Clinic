@@ -1,0 +1,49 @@
+<Window x:Class="ClinicManagement.UI.Views.RecordFormWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="14"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="Thông tin bệnh án" Height="760" Width="600" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="HỒ SƠ BỆNH ÁN" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,0,20"/>
+
+        <!-- Error Message -->
+        <TextBlock Grid.Row="1" Text="{Binding Error}" Foreground="{DynamicResource MaterialDesignValidationErrorBrush}" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <ComboBox materialDesign:HintAssist.Hint="Bệnh nhân *" Style="{StaticResource MaterialDesignFloatingHintComboBox}" ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}" DisplayMemberPath="FullName" Margin="0,0,0,20" FontSize="16" IsEnabled="False"/>
+                <DatePicker materialDesign:HintAssist.Hint="Ngày khám *" Style="{StaticResource MaterialDesignFloatingHintDatePicker}" SelectedDate="{Binding ExaminationDate, UpdateSourceTrigger=PropertyChanged}" FontSize="16" Margin="0,0,0,20" IsEnabled="False"/>
+                <TextBox materialDesign:HintAssist.Hint="Triệu chứng" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding Symptoms, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" FontSize="16" TextWrapping="Wrap" MaxHeight="60" IsEnabled="{Binding CanEdit}"/>
+                <TextBox materialDesign:HintAssist.Hint="Chẩn đoán *" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding Diagnosis, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" FontSize="16" TextWrapping="Wrap" MaxHeight="60" IsEnabled="{Binding CanEdit}"/>
+                <TextBox materialDesign:HintAssist.Hint="Kế hoạch điều trị *" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding TreatmentPlan, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" FontSize="16" TextWrapping="Wrap" MaxHeight="60" IsEnabled="{Binding CanEdit}"/>
+                <TextBox materialDesign:HintAssist.Hint="Toa thuốc" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding Prescription, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" FontSize="16" TextWrapping="Wrap" MaxHeight="60" IsEnabled="{Binding CanEdit}"/>
+                <TextBox materialDesign:HintAssist.Hint="Dịch vụ đề xuất" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding ProposedServices, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" FontSize="16" TextWrapping="Wrap" MaxHeight="60" IsEnabled="{Binding CanEdit}"/>
+                <DatePicker materialDesign:HintAssist.Hint="Ngày tái khám" Style="{StaticResource MaterialDesignFloatingHintDatePicker}" SelectedDate="{Binding ReExamDate, UpdateSourceTrigger=PropertyChanged}" FontSize="16" Margin="0,0,0,20" IsEnabled="{Binding CanEdit}"/>
+                <TextBox materialDesign:HintAssist.Hint="Sơ đồ răng (Ví dụ: Răng 11 - Sâu; Răng 48 - Nhổ)" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding DentalChartDetails, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" FontSize="16" TextWrapping="Wrap" MaxHeight="60" IsEnabled="{Binding CanEdit}"/>
+                <TextBox materialDesign:HintAssist.Hint="Ghi chú" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" FontSize="16" TextWrapping="Wrap" MaxHeight="60" IsEnabled="{Binding CanEdit}"/>
+                <ComboBox materialDesign:HintAssist.Hint="Trạng thái" Style="{StaticResource MaterialDesignFloatingHintComboBox}" ItemsSource="{Binding Statuses}" SelectedItem="{Binding Status, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" FontSize="16" IsEnabled="{Binding CanEdit}"/>
+                <TextBox materialDesign:HintAssist.Hint="Lý do quản lý can thiệp khi sửa bệnh án đã chốt" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding ManagerInterventionReason, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" FontSize="16" TextWrapping="Wrap" MaxHeight="60" IsEnabled="{Binding CanEdit}"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="HỦY" Style="{StaticResource MaterialDesignOutlinedButton}" Width="100" Height="40" Margin="0,0,15,0" Click="CancelButton_Click"/>
+            <Button Content="LƯU BỆNH ÁN" Command="{Binding SaveCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource MaterialDesignRaisedButton}" Width="150" Height="40" Background="{DynamicResource PrimaryHueMidBrush}" BorderBrush="{DynamicResource PrimaryHueMidBrush}"/>
+        </StackPanel>
+    </Grid>
+</Window>

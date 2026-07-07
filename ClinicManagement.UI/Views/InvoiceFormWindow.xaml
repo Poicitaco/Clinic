@@ -1,0 +1,110 @@
+<Window x:Class="ClinicManagement.UI.Views.InvoiceFormWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="14"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="Thông tin hóa đơn" Height="650" Width="650" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="HÓA ĐƠN THANH TOÁN" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,0,20"/>
+
+        <!-- Error Message -->
+        <TextBlock Grid.Row="1" Text="{Binding Error}" Foreground="{DynamicResource MaterialDesignValidationErrorBrush}" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+        <Grid Grid.Row="2" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ComboBox Grid.Column="0" materialDesign:HintAssist.Hint="Bệnh án *" Style="{StaticResource MaterialDesignFloatingHintComboBox}" ItemsSource="{Binding Examinations}" SelectedItem="{Binding SelectedExamination}" DisplayMemberPath="Patient.FullName" IsEnabled="{Binding IsCreating}" FontSize="16"/>
+            <DatePicker Grid.Column="2" materialDesign:HintAssist.Hint="Ngày lập *" Style="{StaticResource MaterialDesignFloatingHintDatePicker}" SelectedDate="{Binding InvoiceDate, UpdateSourceTrigger=PropertyChanged}" FontSize="16"/>
+        </Grid>
+
+        <Grid Grid.Row="3" Margin="0,0,0,20" Visibility="{Binding IsCreating, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <ComboBox Grid.Column="0" materialDesign:HintAssist.Hint="Thêm dịch vụ" Style="{StaticResource MaterialDesignFloatingHintComboBox}" ItemsSource="{Binding AvailableServices}" SelectedItem="{Binding SelectedServiceToAdd}" DisplayMemberPath="Name" Margin="0,0,10,0" FontSize="16"/>
+            <Button Grid.Column="1" Content="THÊM" Command="{Binding AddServiceCommand}" Style="{StaticResource MaterialDesignRaisedButton}" Height="36" Width="90" Margin="0,0,10,0"/>
+            <Button Grid.Column="2" Content="XÓA" Command="{Binding RemoveServiceCommand}" Style="{StaticResource MaterialDesignOutlinedButton}" Height="36" Width="90" Foreground="{DynamicResource MaterialDesignValidationErrorBrush}" BorderBrush="{DynamicResource MaterialDesignValidationErrorBrush}"/>
+        </Grid>
+
+        <DataGrid Grid.Row="5" ItemsSource="{Binding SelectedDetails}" SelectedItem="{Binding SelectedDetailToRemove}" AutoGenerateColumns="False" IsReadOnly="{Binding IsReadOnly}" HeadersVisibility="Column" Background="Transparent" BorderThickness="0" RowHeight="45" Margin="0,0,0,10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="DỊCH VỤ" Binding="{Binding Service.Name}" Width="*" IsReadOnly="True"/>
+                <DataGridTextColumn Header="ĐƠN GIÁ" Binding="{Binding UnitPrice, StringFormat={}{0:N0} VNĐ}" Width="150" IsReadOnly="True"/>
+                <DataGridTextColumn Header="SỐ LƯỢNG" Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,5">
+            <TextBlock Text="TỔNG TIỀN: " FontSize="18" FontWeight="Bold" Foreground="{DynamicResource MaterialDesignBody}" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding TotalAmount, StringFormat={}{0:N0} VNĐ}" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource PrimaryHueMidBrush}" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Payment Section (Only visible in ReadOnly/View Mode) -->
+        <Grid Grid.Row="6" Margin="0,0,0,20" Visibility="{Binding IsReadOnly, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="LỊCH SỬ THANH TOÁN" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryHueMidBrush}" VerticalAlignment="Center"/>
+                <TextBlock Text=" (Đã thu: " FontSize="14" Foreground="#64748B" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                <TextBlock Text="{Binding PaidAmount, StringFormat={}{0:N0}}" FontSize="14" FontWeight="Bold" Foreground="#10B981" VerticalAlignment="Center"/>
+                <TextBlock Text=" - Còn nợ: " FontSize="14" Foreground="#64748B" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding RemainingAmount, StringFormat={}{0:N0}}" FontSize="14" FontWeight="Bold" Foreground="#EF4444" VerticalAlignment="Center"/>
+                <TextBlock Text=")" FontSize="14" Foreground="#64748B" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <DataGrid Grid.Row="1" ItemsSource="{Binding Payments}" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" Background="Transparent" BorderThickness="0" RowHeight="35" MaxHeight="120" Margin="0,0,0,10">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="NGÀY ĐÓNG" Binding="{Binding PaymentDate, StringFormat=dd/MM/yyyy HH:mm}" Width="150"/>
+                    <DataGridTextColumn Header="SỐ TIỀN" Binding="{Binding Amount, StringFormat={}{0:N0} VNĐ}" Width="*" FontWeight="Bold" Foreground="#10B981"/>
+                    <DataGridTextColumn Header="GHI CHÚ" Binding="{Binding Note}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <Grid Grid.Row="7" Margin="0,0,0,20" Visibility="{Binding IsReadOnly, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" materialDesign:HintAssist.Hint="Số tiền đóng *" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding PaymentAmount, UpdateSourceTrigger=PropertyChanged}" FontSize="16" Margin="0,0,10,0"/>
+            <TextBox Grid.Column="1" materialDesign:HintAssist.Hint="Ghi chú" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding PaymentNote, UpdateSourceTrigger=PropertyChanged}" FontSize="16" Margin="0,0,10,0"/>
+            <Button Grid.Column="2" Content="THÊM THANH TOÁN" Command="{Binding AddPaymentCommand}" Style="{StaticResource MaterialDesignRaisedButton}" Height="36" Background="#10B981" BorderBrush="#10B981"/>
+        </Grid>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="ĐÓNG" Style="{StaticResource MaterialDesignOutlinedButton}" Width="100" Height="40" Margin="0,0,15,0" Click="CancelButton_Click"/>
+            <Button Content="LƯU HÓA ĐƠN" Command="{Binding SaveCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" Visibility="{Binding IsCreating, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource MaterialDesignRaisedButton}" Width="150" Height="40" Background="{DynamicResource PrimaryHueMidBrush}" BorderBrush="{DynamicResource PrimaryHueMidBrush}"/>
+        </StackPanel>
+    </Grid>
+</Window>

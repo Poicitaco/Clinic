@@ -1,0 +1,152 @@
+<UserControl x:Class="ClinicManagement.UI.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="1000">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Báo Cáo Thống Kê" FontSize="28" FontWeight="Bold" Foreground="#1E293B"/>
+                <TextBlock Text="Tổng quan doanh thu và hoạt động phòng khám" FontSize="14" Foreground="#64748B" Margin="15,10,0,0"/>
+            </StackPanel>
+            
+            <Button Content="XUẤT EXCEL" Command="{Binding ExportExcelCommand}" HorizontalAlignment="Right" VerticalAlignment="Center" Height="42" Background="#10B981" BorderBrush="#10B981" Foreground="White" FontWeight="Bold" materialDesign:ButtonAssist.CornerRadius="8" Padding="20,0">
+                <Button.ContentTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="FileExcel" VerticalAlignment="Center" Margin="0,0,8,0" Width="20" Height="20"/>
+                            <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </Button.ContentTemplate>
+            </Button>
+        </Grid>
+
+        <!-- Filters & Summary -->
+        <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="1.5*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Filters -->
+            <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="20" Margin="0,0,15,0">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.05" Color="Black"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Text="Thời gian" FontWeight="SemiBold" Foreground="#64748B" Margin="0,0,0,15"/>
+                    
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <DatePicker SelectedDate="{Binding StartDate}" materialDesign:HintAssist.Hint="Từ ngày" Width="120" Margin="0,0,15,0"/>
+                        <DatePicker SelectedDate="{Binding EndDate}" materialDesign:HintAssist.Hint="Đến ngày" Width="120" Margin="0,0,15,0"/>
+                        <ComboBox SelectedValue="{Binding SelectedGroupBy}" materialDesign:HintAssist.Hint="Theo" Width="100">
+                            <system:String>Day</system:String>
+                            <system:String>Month</system:String>
+                        </ComboBox>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Total Revenue -->
+            <Border Grid.Column="1" Background="White" CornerRadius="12" Padding="20" Margin="0,0,15,0">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.05" Color="Black"/>
+                </Border.Effect>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Border Background="#DBEAFE" CornerRadius="8" Width="40" Height="40" Margin="0,0,10,0">
+                            <materialDesign:PackIcon Kind="CashMultiple" Foreground="#3B82F6" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="Tổng Doanh Thu" FontWeight="SemiBold" Foreground="#64748B" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding TotalRevenue, StringFormat={}{0:N0} đ}" FontSize="24" FontWeight="Bold" Foreground="#0F172A"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Total Invoices -->
+            <Border Grid.Column="2" Background="White" CornerRadius="12" Padding="20">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.05" Color="Black"/>
+                </Border.Effect>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Border Background="#D1FAE5" CornerRadius="8" Width="40" Height="40" Margin="0,0,10,0">
+                            <materialDesign:PackIcon Kind="Receipt" Foreground="#10B981" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="Số Hóa Đơn Đã Thu" FontWeight="SemiBold" Foreground="#64748B" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding TotalInvoices, StringFormat={}{0:N0}}" FontSize="24" FontWeight="Bold" Foreground="#0F172A"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Charts -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Line Chart (Revenue over time) -->
+            <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="20" Margin="0,0,15,0">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.05" Color="Black"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Text="Biểu đồ doanh thu" FontWeight="SemiBold" FontSize="16" Foreground="#0F172A" Margin="0,0,0,20"/>
+                    
+                    <lvc:CartesianChart Grid.Row="1" Series="{Binding RevenueSeries}" LegendLocation="None">
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis Labels="{Binding RevenueLabels}" />
+                        </lvc:CartesianChart.AxisX>
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis LabelFormatter="{Binding YFormatter}" MinValue="0" />
+                        </lvc:CartesianChart.AxisY>
+                    </lvc:CartesianChart>
+                </Grid>
+            </Border>
+
+            <!-- Pie Chart (Category revenue) -->
+            <Border Grid.Column="1" Background="White" CornerRadius="12" Padding="20">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.05" Color="Black"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Text="Cơ cấu theo danh mục" FontWeight="SemiBold" FontSize="16" Foreground="#0F172A" Margin="0,0,0,20"/>
+                    
+                    <lvc:PieChart Grid.Row="1" Series="{Binding CategorySeries}" LegendLocation="Bottom" Hoverable="True" DataTooltip="{x:Null}">
+                    </lvc:PieChart>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

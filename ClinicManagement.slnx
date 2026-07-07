@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="ClinicManagement.Business/ClinicManagement.Business.csproj" Id="37889605-4a7c-42c8-a993-3344d9355656" />
+  <Project Path="ClinicManagement.Core/ClinicManagement.Core.csproj" Id="c97da52e-cdc3-418d-8c59-9fad475be5b4" />
+  <Project Path="ClinicManagement.DataAccess/ClinicManagement.DataAccess.csproj" Id="54f4fbf9-216b-4772-906a-b7217068f0fc" />
+  <Project Path="ClinicManagement.Tests/ClinicManagement.Tests.csproj" Id="27bd6e4a-ed00-4137-bb5c-18f1c225b958" />
+  <Project Path="ClinicManagement.UI/ClinicManagement.UI.csproj" Id="37fdd673-0731-4125-8639-cf3bc1d58dbf" />
+</Solution>

@@ -1,0 +1,13 @@
+bin/
+obj/
+TestResults/
+.vs/
+*.user
+*.suo
+*.log
+*.pdb
+*.exe
+*.trx
+DbTest.*
+Diagnostic.*
+srs-1.MD

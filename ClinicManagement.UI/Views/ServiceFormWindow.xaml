@@ -1,0 +1,74 @@
+<Window x:Class="ClinicManagement.UI.Views.ServiceFormWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="14"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="Thông tin dịch vụ" Height="650" Width="450" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="THÔNG TIN DỊCH VỤ" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,0,20"/>
+
+        <!-- Error Message -->
+        <TextBlock Grid.Row="1" Text="{Binding Error}" Foreground="{DynamicResource MaterialDesignValidationErrorBrush}" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+        <TextBox Grid.Row="2" materialDesign:HintAssist.Hint="Tên dịch vụ *" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" FontSize="16"/>
+
+        <ComboBox Grid.Row="3" materialDesign:HintAssist.Hint="Danh mục *" ItemsSource="{Binding Categories}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedCategory}" Margin="0,0,0,20" FontSize="16" Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+
+        <TextBox Grid.Row="4" materialDesign:HintAssist.Hint="Mô tả" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" FontSize="16" TextWrapping="Wrap" MaxHeight="80"/>
+
+        <CheckBox Grid.Row="5" Content="Dịch vụ chia thành nhiều giai đoạn" IsChecked="{Binding IsMultiStage}" Margin="0,0,0,10" FontSize="14"/>
+
+        <!-- Giai đoạn list -->
+        <StackPanel Grid.Row="6" Visibility="{Binding IsMultiStage, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,10,0,0">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="CÁC GIAI ĐOẠN" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                <Button Command="{Binding AddStageCommand}" Content="Thêm Giai Đoạn" Style="{StaticResource MaterialDesignOutlinedButton}" Height="30" Padding="10,0"/>
+            </StackPanel>
+            
+            <DataGrid ItemsSource="{Binding Stages}" AutoGenerateColumns="False" CanUserAddRows="False" Background="White" BorderThickness="1" BorderBrush="#E2E8F0" Height="150" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Tên Giai Đoạn" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+                    <DataGridTextColumn Header="Phần trăm (%)" Binding="{Binding Percentage, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                    <DataGridTemplateColumn Width="80">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding DataContext.RemoveStageCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                        CommandParameter="{Binding}" 
+                                        Style="{StaticResource MaterialDesignFlatButton}" Foreground="Red" Content="Xóa" Height="25" Padding="5,0"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="HỦY" Style="{StaticResource MaterialDesignOutlinedButton}" Width="100" Height="40" Margin="0,0,15,0" Click="CancelButton_Click"/>
+            <Button Content="LƯU DỊCH VỤ" Command="{Binding SaveCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource MaterialDesignRaisedButton}" Width="150" Height="40" Background="{DynamicResource PrimaryHueMidBrush}" BorderBrush="{DynamicResource PrimaryHueMidBrush}"/>
+        </StackPanel>
+    </Grid>
+</Window>

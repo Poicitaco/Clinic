@@ -1,0 +1,82 @@
+<UserControl x:Class="ClinicManagement.UI.Views.AppointmentListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="950">
+    <Grid Margin="20,10,20,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="0,0,0,25">
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="Danh Sách Lịch Hẹn" FontSize="28" FontWeight="Bold" Foreground="#1E293B"/>
+                <TextBlock Text="Quản lý lịch khám và điều trị của bệnh nhân" FontSize="14" Foreground="#64748B" Margin="0,5,0,0"/>
+            </StackPanel>
+            
+            <Button Content="+ TẠO LỊCH HẸN" Command="{Binding AddCommand}" Style="{StaticResource MaterialDesignRaisedButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Height="42" Background="#38BDF8" BorderBrush="#38BDF8" Foreground="White" FontWeight="Bold" materialDesign:ButtonAssist.CornerRadius="8" Padding="20,0"/>
+        </Grid>
+
+        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="0">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.05" Color="Black"/>
+            </Border.Effect>
+
+            <DataGrid Margin="5" ItemsSource="{Binding Appointments}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" Background="Transparent" BorderThickness="0" RowHeight="55" AlternatingRowBackground="#F8FAFC" HorizontalGridLinesBrush="#E2E8F0" VerticalGridLinesBrush="Transparent">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="#64748B"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="Padding" Value="15,15,15,15"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        <Setter Property="BorderBrush" Value="#E2E8F0"/>
+                    </Style>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Padding" Value="15,0,15,0"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridCell">
+                                    <Border Padding="{TemplateBinding Padding}" Background="Transparent">
+                                        <ContentPresenter VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.Resources>
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="BỆNH NHÂN" Binding="{Binding PatientName}" Width="*" FontWeight="SemiBold" Foreground="#0F172A"/>
+                    <DataGridTextColumn Header="NHA SĨ" Binding="{Binding Dentist.FullName}" Width="*"/>
+                    <DataGridTextColumn Header="THỜI GIAN" Binding="{Binding StartTime, StringFormat=dd/MM/yyyy HH:mm}" Width="*"/>
+                    
+                    <DataGridTemplateColumn Header="TRẠNG THÁI" Width="120">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border Background="#DBEAFE" CornerRadius="4" Padding="8,4" HorizontalAlignment="Left">
+                                    <TextBlock Text="{Binding Status, Converter={StaticResource EnumDescriptionConverter}}" Foreground="#2563EB" FontWeight="SemiBold" FontSize="12"/>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="" Width="170">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <Button Content="SỬA" Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignOutlinedButton}" Height="32" Padding="15,0" Foreground="#38BDF8" BorderBrush="#38BDF8" materialDesign:ButtonAssist.CornerRadius="6" Margin="0,0,10,0"/>
+                                    <Button Content="HỦY" Command="{Binding DataContext.CancelAppCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignOutlinedButton}" Height="32" Padding="15,0" Foreground="#EF4444" BorderBrush="#EF4444" materialDesign:ButtonAssist.CornerRadius="6"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    </Grid>
+</UserControl>

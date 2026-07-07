@@ -1,0 +1,55 @@
+<Window x:Class="ClinicManagement.UI.Views.AppointmentFormWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="14"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="Thông tin lịch hẹn" Height="500" Width="450" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <TextBlock Grid.Row="0" Text="ĐẶT LỊCH HẸN" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource PrimaryHueMidBrush}" Margin="0,0,0,20"/>
+
+        <!-- Error Message -->
+        <TextBlock Grid.Row="1" Text="{Binding Error}" Foreground="{DynamicResource MaterialDesignValidationErrorBrush}" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+        <TextBox Grid.Row="2" materialDesign:HintAssist.Hint="Tên bệnh nhân *" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding PatientName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" FontSize="16"/>
+
+        <TextBox Grid.Row="3" materialDesign:HintAssist.Hint="Số điện thoại *" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" FontSize="16"/>
+
+        <ComboBox Grid.Row="4" materialDesign:HintAssist.Hint="Nha sĩ phụ trách *" Style="{StaticResource MaterialDesignFloatingHintComboBox}" ItemsSource="{Binding Dentists}" SelectedItem="{Binding SelectedDentist}" DisplayMemberPath="FullName" Margin="0,0,0,20" FontSize="16"/>
+
+        <Grid Grid.Row="5" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <DatePicker Grid.Column="0" materialDesign:HintAssist.Hint="Ngày hẹn *" Style="{StaticResource MaterialDesignFloatingHintDatePicker}" SelectedDate="{Binding AppointmentDate, UpdateSourceTrigger=PropertyChanged}" FontSize="16"/>
+            <materialDesign:TimePicker Grid.Column="2" materialDesign:HintAssist.Hint="Giờ hẹn *" Style="{StaticResource MaterialDesignFloatingHintTimePicker}" SelectedTime="{Binding AppointmentTime, UpdateSourceTrigger=PropertyChanged}" FontSize="16"/>
+        </Grid>
+
+        <TextBox Grid.Row="6" materialDesign:HintAssist.Hint="Ghi chú" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" MaxHeight="80" Margin="0,0,0,20" FontSize="16"/>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="HỦY" Style="{StaticResource MaterialDesignOutlinedButton}" Width="100" Height="40" Margin="0,0,15,0" Click="CancelButton_Click"/>
+            <Button Content="LƯU LỊCH HẸN" Command="{Binding SaveCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource MaterialDesignRaisedButton}" Width="150" Height="40" Background="{DynamicResource PrimaryHueMidBrush}" BorderBrush="{DynamicResource PrimaryHueMidBrush}"/>
+        </StackPanel>
+    </Grid>
+</Window>

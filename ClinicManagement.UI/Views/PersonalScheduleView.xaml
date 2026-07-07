@@ -1,0 +1,53 @@
+<UserControl x:Class="ClinicManagement.UI.Views.PersonalScheduleView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="950"
+             Background="#F1F5F9">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="LỊCH LÀM VIỆC CÁ NHÂN" FontSize="28" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,16"/>
+
+        <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Button Command="{Binding PreviousWeekCommand}" HorizontalAlignment="Left" Width="42" Height="38" Style="{StaticResource MaterialDesignIconButton}">
+                <materialDesign:PackIcon Kind="ChevronLeft" Width="24" Height="24"/>
+            </Button>
+            <TextBlock Text="{Binding WeekRangeText}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" FontWeight="SemiBold" Foreground="#334155"/>
+            <Button Command="{Binding NextWeekCommand}" HorizontalAlignment="Right" Width="42" Height="38" Style="{StaticResource MaterialDesignIconButton}">
+                <materialDesign:PackIcon Kind="ChevronRight" Width="24" Height="24"/>
+            </Button>
+        </Grid>
+
+        <Border Grid.Row="2" Background="White" CornerRadius="8" Padding="20" Effect="{StaticResource MaterialDesignShadowDepth1}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="{Binding EmptyMessage}" Foreground="#64748B" FontWeight="SemiBold" Margin="0,0,0,12"/>
+
+                <DataGrid Grid.Row="1" ItemsSource="{Binding ScheduleRows}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" RowHeight="48" Background="White" BorderThickness="0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="NGÀY" Binding="{Binding ScheduleDate, StringFormat=dd/MM/yyyy}" Width="130"/>
+                        <DataGridTextColumn Header="CA" Binding="{Binding ShiftName}" Width="*"/>
+                        <DataGridTextColumn Header="BẮT ĐẦU" Binding="{Binding StartTime, StringFormat=hh\\:mm}" Width="110"/>
+                        <DataGridTextColumn Header="KẾT THÚC" Binding="{Binding EndTime, StringFormat=hh\\:mm}" Width="110"/>
+                        <DataGridTextColumn Header="SỐ GIỜ CA" Binding="{Binding ShiftHours, StringFormat=N2}" Width="110"/>
+                        <DataGridTextColumn Header="HỆ SỐ CA" Binding="{Binding ShiftCoefficient, StringFormat=N2}" Width="110"/>
+                        <DataGridTextColumn Header="HS BỆNH NHÂN" Binding="{Binding PatientCoefficient, StringFormat=N2}" Width="130"/>
+                        <DataGridTextColumn Header="GIỜ QUY ĐỔI" Binding="{Binding ConvertedHours, StringFormat=N2}" Width="130"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
