@@ -138,6 +138,30 @@ namespace ClinicManagement.Tests
         }
 
         [TestMethod]
+        public void UpdateService_UpdatesDescription()
+        {
+            _fakeUow.Services.Add(new Service
+            {
+                Id = 1,
+                Name = "Khám răng",
+                Description = "Mô tả cũ",
+                CategoryId = 1,
+                IsActive = true
+            });
+
+            _serviceService.UpdateService(new Service
+            {
+                Id = 1,
+                Name = "Khám răng",
+                Description = "Mô tả mới",
+                CategoryId = 1,
+                IsActive = true
+            });
+
+            Assert.AreEqual("Mô tả mới", _fakeUow.Services.GetById(1).Description);
+        }
+
+        [TestMethod]
         public void SetServicePrice_MultipleCalls_KeepsAllHistoryRecords()
         {
             // Input: Thêm 3 mốc giá khác nhau

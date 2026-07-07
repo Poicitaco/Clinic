@@ -221,6 +221,42 @@ namespace ClinicManagement.Tests
         }
 
         [TestMethod]
+        public void UpdateEmployee_SetStatusWorkingAfterResigned_ShouldReactivateAccount()
+        {
+            var emp = new Employee
+            {
+                FullName = "Nguyen Van V",
+                DateOfBirth = new DateTime(1990, 1, 1),
+                Gender = Gender.Male,
+                PhoneNumber = "0933333333",
+                Email = "emailV@test.com",
+                Role = EmployeeRole.Dentist,
+                Degree = AcademicDegree.Master,
+                StartDate = DateTime.Now.AddYears(-1)
+            };
+            var created = _employeeService.CreateEmployee(emp);
+            _employeeService.TerminateContract(created.Id, DateTime.Today);
+
+            _employeeService.UpdateEmployee(new Employee
+            {
+                Id = created.Id,
+                FullName = created.FullName,
+                DateOfBirth = created.DateOfBirth,
+                Gender = created.Gender,
+                PhoneNumber = created.PhoneNumber,
+                Email = created.Email,
+                Role = created.Role,
+                Degree = created.Degree,
+                StartDate = created.StartDate,
+                ContractStatus = ContractStatus.Working
+            });
+
+            Assert.AreEqual(ContractStatus.Working, created.ContractStatus);
+            Assert.IsNull(created.ResignationDate);
+            Assert.IsTrue(created.Account.IsActive);
+        }
+
+        [TestMethod]
         public void CreateEmployee_DuplicateEmail_ShouldThrowException()
         {
             var emp1 = new Employee

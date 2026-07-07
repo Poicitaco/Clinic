@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:core="clr-namespace:ClinicManagement.Core;assembly=ClinicManagement.Core"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="950">
@@ -63,8 +64,29 @@
                     <DataGridTemplateColumn Header="TRẠNG THÁI" Width="120">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Border Background="#D1FAE5" CornerRadius="4" Padding="8,4" HorizontalAlignment="Left">
-                                    <TextBlock Text="{Binding ContractStatus, Converter={StaticResource EnumDescriptionConverter}}" Foreground="#059669" FontWeight="SemiBold" FontSize="12"/>
+                                <Border CornerRadius="4" Padding="8,4" HorizontalAlignment="Left">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="#D1FAE5"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ContractStatus}" Value="{x:Static core:ContractStatus.Resigned}">
+                                                    <Setter Property="Background" Value="#FEE2E2"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock Text="{Binding ContractStatus, Converter={StaticResource EnumDescriptionConverter}}" FontWeight="SemiBold" FontSize="12">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#059669"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ContractStatus}" Value="{x:Static core:ContractStatus.Resigned}">
+                                                        <Setter Property="Foreground" Value="#DC2626"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
                                 </Border>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

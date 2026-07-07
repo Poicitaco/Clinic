@@ -126,6 +126,7 @@ namespace ClinicManagement.Business.Services
             if (existingService != null)
             {
                 existingService.Name = service.Name;
+                existingService.Description = service.Description;
                 existingService.CategoryId = service.CategoryId;
                 existingService.IsActive = service.IsActive;
                 existingService.IsMultiStage = service.IsMultiStage;

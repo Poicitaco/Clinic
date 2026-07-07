@@ -84,14 +84,14 @@ namespace ClinicManagement.UI.ViewModels
         public AppointmentFormViewModel()
         {
             _isEditMode = false;
-            AppointmentDate = DateTime.Today;
+            AppointmentDate = DateTime.Today.AddDays(1);
             AppointmentTime = DateTime.Today.Add(new TimeSpan(8, 0, 0));
             Status = AppointmentStatus.Pending;
 
             var unitOfWork = new UnitOfWork(new ClinicDbContext());
             _appointmentService = new AppointmentService(unitOfWork);
             
-            Dentists = new ObservableCollection<Employee>(unitOfWork.Employees.Find(e => e.Role == EmployeeRole.Dentist));
+            Dentists = new ObservableCollection<Employee>(unitOfWork.Employees.Find(e => e.Role == EmployeeRole.Dentist && e.ContractStatus == ContractStatus.Working));
             SelectedDentist = Dentists.FirstOrDefault();
             
             Statuses = new ObservableCollection<AppointmentStatus>(Enum.GetValues(typeof(AppointmentStatus)).Cast<AppointmentStatus>());
@@ -107,7 +107,7 @@ namespace ClinicManagement.UI.ViewModels
             var unitOfWork = new UnitOfWork(new ClinicDbContext());
             _appointmentService = new AppointmentService(unitOfWork);
             
-            Dentists = new ObservableCollection<Employee>(unitOfWork.Employees.Find(e => e.Role == EmployeeRole.Dentist));
+            Dentists = new ObservableCollection<Employee>(unitOfWork.Employees.Find(e => e.Role == EmployeeRole.Dentist && e.ContractStatus == ContractStatus.Working));
             Statuses = new ObservableCollection<AppointmentStatus>(Enum.GetValues(typeof(AppointmentStatus)).Cast<AppointmentStatus>());
             
             PatientName = appointment.PatientName;

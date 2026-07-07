@@ -94,6 +94,16 @@ namespace ClinicManagement.Business
                     existing.Account.IsActive = false;
                 }
             }
+            else if (employee.ContractStatus == ContractStatus.Working
+                && (existing.ContractStatus == ContractStatus.Resigned || existing.ResignationDate.HasValue))
+            {
+                existing.ContractStatus = ContractStatus.Working;
+                existing.ResignationDate = null;
+                if (existing.Account != null)
+                {
+                    existing.Account.IsActive = true;
+                }
+            }
 
             _unitOfWork.Complete();
             return existing;

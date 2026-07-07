@@ -32,7 +32,7 @@ namespace ClinicManagement.UI.ViewModels
             set { _newPrice = value; OnPropertyChanged(nameof(NewPrice)); }
         }
 
-        private DateTime _newEffectiveDate = DateTime.Now;
+        private DateTime _newEffectiveDate = DateTime.Today.AddDays(1);
         public DateTime NewEffectiveDate
         {
             get => _newEffectiveDate;
