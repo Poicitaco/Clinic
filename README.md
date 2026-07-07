@@ -10,13 +10,46 @@ Hướng dẫn thiết lập và chạy project trên Visual Studio.
 
 ## Thiết lập database
 
+Có 2 cách dùng database.
+
+### Cách 1: Không dùng database mẫu
+
+Dùng cách này nếu muốn database sạch và để ứng dụng tự tạo dữ liệu demo ban đầu.
+
 1. Tạo database:
 
 ```sql
 CREATE DATABASE clinicmanagement CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-2. Import database mẫu:
+2. Chạy ứng dụng một lần trong Visual Studio.
+
+Project dùng Entity Framework Migration nên khi app khởi động, hệ thống sẽ tự tạo bảng và seed dữ liệu demo cơ bản.
+
+Tài khoản demo được tạo tự động:
+
+| Vai trò | Tài khoản | Mật khẩu |
+|---|---|---|
+| Quản lý | `admin@clinic.com` | `Manager@123` |
+| Nha sĩ | `dentist@clinic.com` | `Manager@123` |
+| Nha sĩ | `dentist2@clinic.com` | `Manager@123` |
+| Nha sĩ | `dentist3@clinic.com` | `Manager@123` |
+| Nha sĩ | `dentist4@clinic.com` | `Manager@123` |
+| Lễ tân | `receptionist@clinic.com` | `Manager@123` |
+
+Seed tự động cũng tạo sẵn nhân viên, dịch vụ, ca làm việc, lịch làm việc, bệnh nhân, lịch hẹn, bệnh án và hóa đơn demo.
+
+### Cách 2: Dùng database mẫu có sẵn
+
+Dùng cách này nếu muốn import nhanh bộ dữ liệu mẫu đã export sẵn.
+
+1. Tạo database:
+
+```sql
+CREATE DATABASE clinicmanagement CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+2. Import database mẫu sạch:
 
 ```powershell
 mysql -u root -p clinicmanagement < db_backups\clinicmanagement_sample_20260707_093813.sql
