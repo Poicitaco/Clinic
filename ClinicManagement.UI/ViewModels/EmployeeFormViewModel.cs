@@ -15,6 +15,7 @@ namespace ClinicManagement.UI.ViewModels
         private readonly IEmployeeService _service;
         public ICommand SaveCommand { get; }
         public event Action OnSaved;
+        public event Action RequestClose;
 
         public EmployeeFormViewModel()
         {
@@ -41,6 +42,7 @@ namespace ClinicManagement.UI.ViewModels
                 else _service.CreateEmployee(_employee);
                 
                 OnSaved?.Invoke();
+                RequestClose?.Invoke();
             }
             catch (Exception ex)
             {

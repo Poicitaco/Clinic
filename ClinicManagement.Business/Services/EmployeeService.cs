@@ -80,6 +80,21 @@ namespace ClinicManagement.Business
                 existing.Degree = employee.Degree;
             }
 
+            if (employee.ContractStatus == ContractStatus.Resigned
+                && existing.ContractStatus != ContractStatus.Resigned
+                && !existing.ResignationDate.HasValue)
+            {
+                if (DateTime.Today < existing.StartDate.Date)
+                    throw new Exception("Ngày thôi việc không được nhỏ hơn ngày bắt đầu làm việc.");
+
+                existing.ResignationDate = DateTime.Today;
+                existing.ContractStatus = ContractStatus.Resigned;
+                if (existing.Account != null)
+                {
+                    existing.Account.IsActive = false;
+                }
+            }
+
             _unitOfWork.Complete();
             return existing;
         }
