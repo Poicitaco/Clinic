@@ -26,7 +26,21 @@
         <!-- Thiết lập giá mới -->
         <GroupBox Grid.Row="2" Header="Thiết lập giá mới" Margin="0,0,0,20" materialDesign:ColorZoneAssist.Mode="Standard">
             <StackPanel Margin="10">
-                <TextBlock Text="{Binding Error}" Foreground="Red" Margin="0,0,0,10" Visibility="{Binding Error, Converter={StaticResource {x:Static Visibility.Visible}}}"/>
+                <TextBlock Text="{Binding Error}" Foreground="Red" Margin="0,0,0,10">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Error}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Error}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
                 
                 <Grid>
                     <Grid.ColumnDefinitions>
