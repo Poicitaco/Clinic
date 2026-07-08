@@ -69,6 +69,9 @@ namespace ClinicManagement.UI
             btnAppointment.Visibility = role == EmployeeRole.Manager || role == EmployeeRole.Receptionist
                 ? Visibility.Visible
                 : Visibility.Collapsed;
+            btnPatient.Visibility = role == EmployeeRole.Manager || role == EmployeeRole.Receptionist
+                ? Visibility.Visible
+                : Visibility.Collapsed;
             btnRecord.Visibility = role == EmployeeRole.Manager || role == EmployeeRole.Dentist
                 ? Visibility.Visible
                 : Visibility.Collapsed;
@@ -182,6 +185,15 @@ namespace ClinicManagement.UI
             MainContent.Content = new Views.AppointmentListView
             {
                 DataContext = new ViewModels.AppointmentListViewModel()
+            };
+        }
+
+        private void NavPatient_Click(object sender, RoutedEventArgs e)
+        {
+            UserContext.CheckRole(EmployeeRole.Manager, EmployeeRole.Receptionist);
+            MainContent.Content = new Views.PatientListView
+            {
+                DataContext = new ViewModels.PatientListViewModel()
             };
         }
 

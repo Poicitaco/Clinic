@@ -10,6 +10,8 @@ namespace ClinicManagement.Business.Interfaces
         void AddRecord(PatientExamination record);
         void UpdateRecord(PatientExamination record);
         IEnumerable<Patient> GetAllPatients();
+        void AddPatient(Patient patient);
+        void UpdatePatient(Patient patient);
         IEnumerable<Employee> GetAllDentists();
     }
 }

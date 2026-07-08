@@ -44,6 +44,26 @@ namespace ClinicManagement.Tests
         }
 
         [TestMethod]
+        public void SalaryService_GetAllConfigurations_RoleReceptionist_ThrowsUnauthorized()
+        {
+            UserContext.CurrentUser = new Employee { Role = EmployeeRole.Receptionist };
+            var service = new SalaryService(_fakeUow);
+
+            var ex = Assert.ThrowsException<UnauthorizedAccessException>(() => service.GetAllConfigurations());
+            Assert.IsTrue(ex.Message.Contains("không có quyền"));
+        }
+
+        [TestMethod]
+        public void SalaryService_GetSalaryRecords_RoleDentist_ThrowsUnauthorized()
+        {
+            UserContext.CurrentUser = new Employee { Role = EmployeeRole.Dentist };
+            var service = new SalaryService(_fakeUow);
+
+            var ex = Assert.ThrowsException<UnauthorizedAccessException>(() => service.GetSalaryRecords(5, 2026));
+            Assert.IsTrue(ex.Message.Contains("không có quyền"));
+        }
+
+        [TestMethod]
         public void StatisticService_GetRevenue_RoleDentist_ThrowsUnauthorized()
         {
             // Input: UserContext là Dentist, gọi StatisticService.GetTotalRevenue
@@ -609,6 +629,40 @@ namespace ClinicManagement.Tests
             Assert.AreEqual(DateTime.Today.AddDays(14), record.ReExamDate);
             Assert.AreEqual("Sửa theo yêu cầu chuyên môn", record.ManagerInterventionReason);
             Assert.AreEqual(ExaminationStatus.Finalized, record.Status);
+        }
+
+        [TestMethod]
+        public void PatientRecordService_AddPatient_Receptionist_ShouldCreateSuccessfully()
+        {
+            UserContext.CurrentUser = new Employee { Id = 2, Role = EmployeeRole.Receptionist };
+            var service = new PatientRecordService(_fakeUow);
+
+            service.AddPatient(new Patient
+            {
+                FullName = "Nguyen Van Test",
+                PhoneNumber = "0901234567",
+                DateOfBirth = new DateTime(1990, 1, 1),
+                Gender = Gender.Male
+            });
+
+            Assert.AreEqual(1, _fakeUow.Patients.GetAll().Count());
+        }
+
+        [TestMethod]
+        public void PatientRecordService_UpdatePatient_Dentist_ThrowsUnauthorized()
+        {
+            UserContext.CurrentUser = new Employee { Id = 3, Role = EmployeeRole.Dentist };
+            var service = new PatientRecordService(_fakeUow);
+
+            var ex = Assert.ThrowsException<UnauthorizedAccessException>(() => service.UpdatePatient(new Patient
+            {
+                Id = 1,
+                FullName = "Nguyen Van Test",
+                PhoneNumber = "0901234567",
+                DateOfBirth = new DateTime(1990, 1, 1)
+            }));
+
+            Assert.IsTrue(ex.Message.Contains("không có quyền"));
         }
 
         [TestMethod]

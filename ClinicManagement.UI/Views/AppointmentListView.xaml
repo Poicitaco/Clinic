@@ -9,6 +9,7 @@
     <Grid Margin="20,10,20,20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -21,7 +22,17 @@
             <Button Content="+ TẠO LỊCH HẸN" Command="{Binding AddCommand}" Style="{StaticResource MaterialDesignRaisedButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Height="42" Background="#38BDF8" BorderBrush="#38BDF8" Foreground="White" FontWeight="Bold" materialDesign:ButtonAssist.CornerRadius="8" Padding="20,0"/>
         </Grid>
 
-        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="0">
+        <Border Grid.Row="1" Background="White" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+            <StackPanel Orientation="Horizontal">
+                <TextBox Width="220" materialDesign:HintAssist.Hint="Tên hoặc SĐT" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,12,0"/>
+                <DatePicker Width="130" materialDesign:HintAssist.Hint="Ngày hẹn" SelectedDate="{Binding SelectedDate, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,12,0"/>
+                <ComboBox Width="180" materialDesign:HintAssist.Hint="Nha sĩ" ItemsSource="{Binding Dentists}" SelectedItem="{Binding SelectedDentist}" DisplayMemberPath="FullName" Margin="0,0,12,0"/>
+                <ComboBox Width="180" materialDesign:HintAssist.Hint="Người tạo" ItemsSource="{Binding Creators}" SelectedItem="{Binding SelectedCreator}" DisplayMemberPath="FullName" Margin="0,0,12,0"/>
+                <Button Content="XÓA LỌC" Command="{Binding ClearFiltersCommand}" Style="{StaticResource MaterialDesignOutlinedButton}" Height="32"/>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="0">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.05" Color="Black"/>
             </Border.Effect>

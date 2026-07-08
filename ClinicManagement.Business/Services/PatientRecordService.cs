@@ -107,6 +107,8 @@ namespace ClinicManagement.Business.Services
 
         public IEnumerable<Patient> GetAllPatients()
         {
+            UserContext.CheckRole(EmployeeRole.Manager, EmployeeRole.Dentist, EmployeeRole.Receptionist);
+
             var patients = _unitOfWork.Patients.GetAll().ToList();
             if (!patients.Any())
             {
@@ -117,6 +119,47 @@ namespace ClinicManagement.Business.Services
                 patients.Add(defaultPatient);
             }
             return patients;
+        }
+
+        public void AddPatient(Patient patient)
+        {
+            UserContext.CheckRole(EmployeeRole.Manager, EmployeeRole.Receptionist);
+            ValidatePatient(patient, null);
+
+            _unitOfWork.Patients.Add(patient);
+            _unitOfWork.Complete();
+        }
+
+        public void UpdatePatient(Patient patient)
+        {
+            UserContext.CheckRole(EmployeeRole.Manager, EmployeeRole.Receptionist);
+            ValidatePatient(patient, patient.Id);
+
+            var existing = _unitOfWork.Patients.GetById(patient.Id);
+            if (existing == null)
+                throw new Exception("Không tìm thấy bệnh nhân.");
+
+            existing.FullName = patient.FullName.Trim();
+            existing.DateOfBirth = patient.DateOfBirth;
+            existing.Gender = patient.Gender;
+            existing.PhoneNumber = patient.PhoneNumber;
+            existing.Email = patient.Email;
+            existing.Address = patient.Address;
+            _unitOfWork.Complete();
+        }
+
+        private void ValidatePatient(Patient patient, int? currentId)
+        {
+            if (patient == null || string.IsNullOrWhiteSpace(patient.FullName))
+                throw new Exception("Tên bệnh nhân không được để trống.");
+
+            if (string.IsNullOrWhiteSpace(patient.PhoneNumber) || !System.Text.RegularExpressions.Regex.IsMatch(patient.PhoneNumber, @"^0\d{9}$"))
+                throw new Exception("Số điện thoại phải gồm đúng 10 chữ số và bắt đầu bằng số 0.");
+
+            if (_unitOfWork.Patients.GetAll().Any(p => (!currentId.HasValue || p.Id != currentId.Value) && p.PhoneNumber == patient.PhoneNumber))
+                throw new Exception("Số điện thoại bệnh nhân không được trùng.");
+
+            patient.FullName = patient.FullName.Trim();
         }
 
         public IEnumerable<Employee> GetAllDentists()

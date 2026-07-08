@@ -19,6 +19,7 @@ namespace ClinicManagement.Business.Services
 
         public List<SalaryConfiguration> GetAllConfigurations()
         {
+            UserContext.CheckRole(EmployeeRole.Manager);
             return _unitOfWork.SalaryConfigurations.GetAll().ToList();
         }
 
@@ -157,6 +158,7 @@ namespace ClinicManagement.Business.Services
 
         public List<SalaryRecord> GetSalaryRecords(int month, int year)
         {
+            UserContext.CheckRole(EmployeeRole.Manager);
             return _unitOfWork.SalaryRecords.AsQueryable()
                 .Include(r => r.Employee)
                 .Where(r => r.Month == month && r.Year == year)

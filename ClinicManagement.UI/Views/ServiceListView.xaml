@@ -18,7 +18,11 @@
                 <TextBlock Text="Quản lý thông tin và bảng giá các dịch vụ nha khoa" FontSize="14" Foreground="#64748B" Margin="0,5,0,0"/>
             </StackPanel>
             
-            <Button Content="+ THÊM DỊCH VỤ" Command="{Binding AddCommand}" Style="{StaticResource MaterialDesignRaisedButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Height="42" Background="#38BDF8" BorderBrush="#38BDF8" Foreground="White" FontWeight="Bold" materialDesign:ButtonAssist.CornerRadius="8" Padding="20,0"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button Content="THÊM NHÓM" Command="{Binding AddCategoryCommand}" Style="{StaticResource MaterialDesignOutlinedButton}" Height="42" Foreground="#0F766E" BorderBrush="#0F766E" FontWeight="Bold" materialDesign:ButtonAssist.CornerRadius="8" Padding="16,0" Margin="0,0,8,0"/>
+                <Button Content="SỬA NHÓM" Command="{Binding EditCategoryCommand}" Style="{StaticResource MaterialDesignOutlinedButton}" Height="42" Foreground="#0F766E" BorderBrush="#0F766E" FontWeight="Bold" materialDesign:ButtonAssist.CornerRadius="8" Padding="16,0" Margin="0,0,8,0"/>
+                <Button Content="+ THÊM DỊCH VỤ" Command="{Binding AddCommand}" Style="{StaticResource MaterialDesignRaisedButton}" Height="42" Background="#38BDF8" BorderBrush="#38BDF8" Foreground="White" FontWeight="Bold" materialDesign:ButtonAssist.CornerRadius="8" Padding="20,0"/>
+            </StackPanel>
         </Grid>
 
         <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="0">
