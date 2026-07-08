@@ -11,3 +11,7 @@ TestResults/
 DbTest.*
 Diagnostic.*
 srs-1.MD
+
+db_backups/clinicmanagement_before_demo_reset_*.sql
+db_backups/clinicmanagement_schema_*.sql
+db_backups/clinicmanagement_migrationhistory_*.sql
