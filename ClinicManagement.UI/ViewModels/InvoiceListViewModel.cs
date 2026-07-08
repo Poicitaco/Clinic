@@ -79,6 +79,7 @@ namespace ClinicManagement.UI.ViewModels
             if (parameter is Invoice invoice)
             {
                 var formViewModel = new InvoiceFormViewModel(invoice);
+                formViewModel.PaymentChanged += LoadData;
                 var formWindow = new InvoiceFormWindow { DataContext = formViewModel };
                 formWindow.ShowDialog();
                 LoadData();

@@ -15,6 +15,7 @@ namespace ClinicManagement.UI.ViewModels
     public class InvoiceFormViewModel : ViewModelBase
     {
         private readonly IInvoiceService _invoiceService;
+        public event Action PaymentChanged;
 
         public ObservableCollection<PatientExamination> Examinations { get; set; }
         public ObservableCollection<Service> AvailableServices { get; set; }
@@ -134,7 +135,7 @@ namespace ClinicManagement.UI.ViewModels
             SaveCommand = new RelayCommand(param => { });
 
             LoadPayments(unitOfWork);
-            AddPaymentCommand = new RelayCommand(param => AddPayment(), param => IsReadOnly && invoice.Status == InvoiceStatus.Pending);
+            AddPaymentCommand = new RelayCommand(param => AddPayment(), param => IsReadOnly && RemainingAmount > 0);
         }
 
         private void LoadPayments(UnitOfWork unitOfWork)
@@ -164,14 +165,14 @@ namespace ClinicManagement.UI.ViewModels
 
             try
             {
-                // We assume logged in user is admin, ID = 1 for demo purposes
-                // In real app, we get this from SessionManager
-                _invoiceService.AddPayment(_invoiceId, PaymentAmount, PaymentNote, 1);
+                _invoiceService.AddPayment(_invoiceId, PaymentAmount, PaymentNote, UserContext.CurrentUser.Id);
                 
                 var unitOfWork = new UnitOfWork(new ClinicDbContext());
                 LoadPayments(unitOfWork);
                 PaymentAmount = 0;
                 PaymentNote = string.Empty;
+                PaymentChanged?.Invoke();
+                CommandManager.InvalidateRequerySuggested();
                 
                 MessageBox.Show("Thêm đợt thanh toán thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             }

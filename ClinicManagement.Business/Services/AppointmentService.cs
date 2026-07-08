@@ -47,7 +47,7 @@ namespace ClinicManagement.Business.Services
         {
             UserContext.CheckRole(EmployeeRole.Manager, EmployeeRole.Receptionist);
 
-            ValidateAppointment(appointment);
+            ValidateAppointment(appointment, allowPastStartTime: false);
             EnsureDentistIsAvailable(appointment);
             appointment.CreatedById = UserContext.CurrentUser.Id;
 
@@ -59,12 +59,15 @@ namespace ClinicManagement.Business.Services
         {
             UserContext.CheckRole(EmployeeRole.Manager, EmployeeRole.Receptionist);
 
-            ValidateAppointment(appointment);
-            EnsureDentistIsAvailable(appointment);
-
             var existing = _unitOfWork.Appointments.GetById(appointment.Id);
             if (existing != null)
             {
+                var isPastAppointment = existing.StartTime < DateTime.Now;
+                ValidateAppointment(appointment, allowPastStartTime: isPastAppointment);
+
+                if (!isPastAppointment)
+                    EnsureDentistIsAvailable(appointment);
+
                 existing.PatientName = appointment.PatientName;
                 existing.PhoneNumber = appointment.PhoneNumber;
                 existing.DentistId = appointment.DentistId;
@@ -77,7 +80,7 @@ namespace ClinicManagement.Business.Services
             }
         }
 
-        private void ValidateAppointment(Appointment appointment)
+        private void ValidateAppointment(Appointment appointment, bool allowPastStartTime)
         {
             if (string.IsNullOrWhiteSpace(appointment.PatientName))
                 throw new Exception("Tên bệnh nhân không được để trống.");
@@ -92,13 +95,14 @@ namespace ClinicManagement.Business.Services
             if (appointment.DentistId <= 0)
                 throw new Exception("Vui lòng chọn Nha sĩ phụ trách.");
 
-            if (appointment.StartTime < DateTime.Now)
+            if (!allowPastStartTime && appointment.StartTime < DateTime.Now)
                 throw new Exception("Thời gian hẹn không thể ở quá khứ.");
 
             if (appointment.EndTime <= appointment.StartTime)
                 throw new Exception("Thời gian kết thúc phải lớn hơn thời gian bắt đầu.");
 
-            EnsureDentistWorksDuring(appointment);
+            if (!allowPastStartTime)
+                EnsureDentistWorksDuring(appointment);
         }
 
         private void EnsureDentistWorksDuring(Appointment appointment)

@@ -166,6 +166,7 @@ namespace ClinicManagement.UI.ViewModels
             catch (Exception ex)
             {
                 Error = ex.Message;
+                MessageBox.Show(ex.Message, "Không lưu được lịch hẹn", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

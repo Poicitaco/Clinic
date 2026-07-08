@@ -256,6 +256,47 @@ namespace ClinicManagement.Tests
         }
 
         [TestMethod]
+        public void AppointmentService_UpdatePastAppointment_ShouldSaveNotesAndStatus()
+        {
+            UserContext.CurrentUser = new Employee { Id = 2, Role = EmployeeRole.Receptionist };
+            var service = new AppointmentService(_fakeUow);
+            var pastStart = DateTime.Today.AddDays(-2).AddHours(9);
+            _fakeUow.Employees.Add(new Employee
+            {
+                Id = 1,
+                Role = EmployeeRole.Dentist,
+                ContractStatus = ContractStatus.Working
+            });
+            _fakeUow.Appointments.Add(new Appointment
+            {
+                Id = 1,
+                PatientName = "Nguyen Van A",
+                PhoneNumber = "0123456789",
+                DentistId = 1,
+                StartTime = pastStart,
+                EndTime = pastStart.AddHours(1),
+                Status = AppointmentStatus.Pending
+            });
+
+            service.UpdateAppointment(new Appointment
+            {
+                Id = 1,
+                PatientName = "Nguyen Van A",
+                PhoneNumber = "0123456789",
+                DentistId = 1,
+                StartTime = pastStart.AddMinutes(10),
+                EndTime = pastStart.AddMinutes(70),
+                Status = AppointmentStatus.Completed,
+                Notes = "Cap nhat lich hen cu"
+            });
+
+            var updated = _fakeUow.Appointments.GetById(1);
+            Assert.AreEqual(AppointmentStatus.Completed, updated.Status);
+            Assert.AreEqual("Cap nhat lich hen cu", updated.Notes);
+            Assert.AreEqual(pastStart.AddMinutes(10), updated.StartTime);
+        }
+
+        [TestMethod]
         public void AppointmentService_CancelAppointment_Completed_ThrowsException()
         {
             UserContext.CurrentUser = new Employee { Id = 2, Role = EmployeeRole.Receptionist };
@@ -639,6 +680,27 @@ namespace ClinicManagement.Tests
 
             var ex = Assert.ThrowsException<Exception>(() => service.AddPayment(1, 100000, "", 2));
             Assert.IsTrue(ex.Message.Contains("Chỉ hóa đơn chờ thanh toán"));
+        }
+
+        [TestMethod]
+        public void InvoiceService_AddPayment_FullAmount_ShouldMarkPaid()
+        {
+            UserContext.CurrentUser = new Employee { Id = 2, Role = EmployeeRole.Receptionist };
+            var service = new InvoiceService(_fakeUow);
+            var invoice = new Invoice
+            {
+                Id = 1,
+                Status = InvoiceStatus.Pending,
+                TotalAmount = 100000m,
+                PaidAmount = 50000m
+            };
+            _fakeUow.Invoices.Add(invoice);
+
+            service.AddPayment(1, 50000m, "Thanh toan du", 2);
+
+            Assert.AreEqual(100000m, invoice.PaidAmount);
+            Assert.AreEqual(InvoiceStatus.Paid, invoice.Status);
+            Assert.AreEqual(1, _fakeUow.InvoicePayments.GetAll().Count());
         }
 
         [TestMethod]
