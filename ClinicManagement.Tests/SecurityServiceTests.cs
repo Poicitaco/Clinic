@@ -672,6 +672,26 @@ namespace ClinicManagement.Tests
         }
 
         [TestMethod]
+        public void InvoiceService_PayInvoice_Pending_ShouldSetPaidAmountAndStatus()
+        {
+            UserContext.CurrentUser = new Employee { Id = 2, Role = EmployeeRole.Receptionist };
+            var service = new InvoiceService(_fakeUow);
+            var invoice = new Invoice
+            {
+                Id = 1,
+                Status = InvoiceStatus.Pending,
+                TotalAmount = 100000m,
+                PaidAmount = 0m
+            };
+            _fakeUow.Invoices.Add(invoice);
+
+            service.PayInvoice(1);
+
+            Assert.AreEqual(100000m, invoice.PaidAmount);
+            Assert.AreEqual(InvoiceStatus.Paid, invoice.Status);
+        }
+
+        [TestMethod]
         public void InvoiceService_AddPayment_Cancelled_ThrowsException()
         {
             UserContext.CurrentUser = new Employee { Id = 2, Role = EmployeeRole.Receptionist };

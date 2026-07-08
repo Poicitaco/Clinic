@@ -103,6 +103,7 @@ namespace ClinicManagement.Business.Services
             if (invoice.Status != InvoiceStatus.Pending)
                 throw new Exception("Chỉ hóa đơn chờ thanh toán mới được thanh toán.");
 
+            invoice.PaidAmount = invoice.TotalAmount;
             invoice.Status = InvoiceStatus.Paid;
             _unitOfWork.Complete();
         }

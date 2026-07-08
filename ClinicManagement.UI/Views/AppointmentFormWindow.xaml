@@ -9,7 +9,8 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Thông tin lịch hẹn" Height="500" Width="450" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+        Title="Thông tin lịch hẹn" Height="620" Width="450" WindowStartupLocation="CenterOwner" ResizeMode="CanResize">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
     <Grid Margin="30">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -52,4 +53,5 @@
             <Button Content="LƯU LỊCH HẸN" Command="{Binding SaveCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource MaterialDesignRaisedButton}" Width="150" Height="40" Background="{DynamicResource PrimaryHueMidBrush}" BorderBrush="{DynamicResource PrimaryHueMidBrush}"/>
         </StackPanel>
     </Grid>
+    </ScrollViewer>
 </Window>

@@ -51,7 +51,7 @@
                     </Grid.ColumnDefinitions>
                     
                     <TextBox Grid.Column="0" materialDesign:HintAssist.Hint="Giá tổng (VNĐ) *" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding NewPrice, UpdateSourceTrigger=PropertyChanged}"/>
-                    <DatePicker Grid.Column="2" materialDesign:HintAssist.Hint="Ngày có hiệu lực *" Style="{StaticResource MaterialDesignFloatingHintDatePicker}" SelectedDate="{Binding NewEffectiveDate}"/>
+                    <DatePicker Grid.Column="2" materialDesign:HintAssist.Hint="Ngày có hiệu lực *" SelectedDate="{Binding NewEffectiveDate, UpdateSourceTrigger=PropertyChanged}"/>
                     <Button Grid.Column="3" Command="{Binding SetPriceCommand}" Content="Lưu" Style="{StaticResource MaterialDesignRaisedButton}" Margin="10,0,0,0" VerticalAlignment="Bottom"/>
                 </Grid>
             </StackPanel>
