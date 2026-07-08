@@ -53,16 +53,20 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     
-                    <TextBlock Text="Thời gian" FontWeight="SemiBold" Foreground="#64748B" Margin="0,0,0,15"/>
+                    <TextBlock Text="Bộ lọc báo cáo" FontWeight="SemiBold" Foreground="#64748B" Margin="0,0,0,15"/>
                     
-                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <WrapPanel Grid.Row="1">
                         <DatePicker SelectedDate="{Binding StartDate}" materialDesign:HintAssist.Hint="Từ ngày" Width="120" Margin="0,0,15,0"/>
                         <DatePicker SelectedDate="{Binding EndDate}" materialDesign:HintAssist.Hint="Đến ngày" Width="120" Margin="0,0,15,0"/>
-                        <ComboBox SelectedValue="{Binding SelectedGroupBy}" materialDesign:HintAssist.Hint="Theo" Width="100">
+                        <ComboBox SelectedValue="{Binding SelectedGroupBy}" materialDesign:HintAssist.Hint="Theo" Width="100" Margin="0,0,15,0">
                             <system:String>Day</system:String>
                             <system:String>Month</system:String>
                         </ComboBox>
-                    </StackPanel>
+                        <ComboBox ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" DisplayMemberPath="Name" materialDesign:HintAssist.Hint="Nhóm dịch vụ" Width="150" Margin="0,0,15,8"/>
+                        <ComboBox ItemsSource="{Binding Services}" SelectedItem="{Binding SelectedService}" DisplayMemberPath="Name" materialDesign:HintAssist.Hint="Dịch vụ" Width="150" Margin="0,0,15,8"/>
+                        <ComboBox ItemsSource="{Binding Dentists}" SelectedItem="{Binding SelectedDentist}" DisplayMemberPath="FullName" materialDesign:HintAssist.Hint="Nha sĩ" Width="150" Margin="0,0,15,8"/>
+                        <Button Content="XÓA LỌC" Command="{Binding ClearFiltersCommand}" Style="{StaticResource MaterialDesignOutlinedButton}" Height="32"/>
+                    </WrapPanel>
                 </Grid>
             </Border>
 

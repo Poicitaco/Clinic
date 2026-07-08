@@ -7,6 +7,7 @@ using System.Windows.Input;
 using ClinicManagement.UI.Utilities;
 using ClinicManagement.Business.Interfaces;
 using ClinicManagement.Business.Services;
+using ClinicManagement.Core;
 using ClinicManagement.DataAccess;
 using ClinicManagement.DataAccess.UnitOfWork;
 using LiveCharts;
@@ -19,6 +20,7 @@ namespace ClinicManagement.UI.ViewModels
     public class DashboardViewModel : ViewModelBase
     {
         private readonly IStatisticService _statisticService;
+        private readonly UnitOfWork _unitOfWork;
 
         private DateTime _startDate = DateTime.Now.AddMonths(-1);
         public DateTime StartDate
@@ -85,19 +87,50 @@ namespace ClinicManagement.UI.ViewModels
 
         public SeriesCollection CategorySeries { get; set; }
 
+        public ObservableCollection<ServiceCategory> Categories { get; private set; }
+        public ObservableCollection<Service> Services { get; private set; }
+        public ObservableCollection<Employee> Dentists { get; private set; }
+
+        private ServiceCategory _selectedCategory;
+        public ServiceCategory SelectedCategory
+        {
+            get => _selectedCategory;
+            set { _selectedCategory = value; OnPropertyChanged(nameof(SelectedCategory)); RefreshServiceFilter(); LoadStatistics(); }
+        }
+
+        private Service _selectedService;
+        public Service SelectedService
+        {
+            get => _selectedService;
+            set { _selectedService = value; OnPropertyChanged(nameof(SelectedService)); LoadStatistics(); }
+        }
+
+        private Employee _selectedDentist;
+        public Employee SelectedDentist
+        {
+            get => _selectedDentist;
+            set { _selectedDentist = value; OnPropertyChanged(nameof(SelectedDentist)); LoadStatistics(); }
+        }
+
         public ICommand ExportExcelCommand { get; }
+        public ICommand ClearFiltersCommand { get; }
 
         public DashboardViewModel()
         {
-            var unitOfWork = new UnitOfWork(new ClinicDbContext());
-            _statisticService = new StatisticService(unitOfWork);
+            _unitOfWork = new UnitOfWork(new ClinicDbContext());
+            _statisticService = new StatisticService(_unitOfWork);
 
             RevenueSeries = new SeriesCollection();
             RevenueLabels = new List<string>();
             YFormatter = value => value.ToString("N0") + " đ";
             CategorySeries = new SeriesCollection();
+            Categories = new ObservableCollection<ServiceCategory>(_unitOfWork.ServiceCategories.GetAll().OrderBy(c => c.Name));
+            Services = new ObservableCollection<Service>();
+            Dentists = new ObservableCollection<Employee>(_unitOfWork.Employees.Find(e => e.Role == EmployeeRole.Dentist).OrderBy(e => e.FullName));
 
             ExportExcelCommand = new RelayCommand(param => ExportToExcel());
+            ClearFiltersCommand = new RelayCommand(param => ClearFilters());
+            RefreshServiceFilter();
 
             LoadStatistics();
         }
@@ -106,10 +139,19 @@ namespace ClinicManagement.UI.ViewModels
         {
             if (StartDate > EndDate) return;
 
-            TotalRevenue = _statisticService.GetTotalRevenue(StartDate, EndDate);
-            TotalInvoices = _statisticService.GetPaidInvoiceCount(StartDate, EndDate);
+            var report = _statisticService.GetInvoiceReport(StartDate, EndDate, SelectedCategory?.Id, SelectedService?.Id, SelectedDentist?.Id);
+            TotalRevenue = report.Sum(r => r.Revenue);
+            TotalInvoices = report.Sum(r => r.InvoiceCount);
 
-            var revenueData = _statisticService.GetRevenueByTime(StartDate, EndDate, SelectedGroupBy);
+            var revenueData = SelectedGroupBy == "Month"
+                ? report.GroupBy(r => DateTime.ParseExact(r.TimeLabel, "dd/MM/yyyy", null).ToString("MM/yyyy"))
+                    .Select(g => new RevenueData { TimeLabel = g.Key, TotalRevenue = g.Sum(r => r.Revenue) })
+                    .OrderBy(r => DateTime.ParseExact("01/" + r.TimeLabel, "dd/MM/yyyy", null))
+                    .ToList()
+                : report.GroupBy(r => r.TimeLabel)
+                    .Select(g => new RevenueData { TimeLabel = g.Key, TotalRevenue = g.Sum(r => r.Revenue) })
+                    .OrderBy(r => DateTime.ParseExact(r.TimeLabel, "dd/MM/yyyy", null))
+                    .ToList();
             
             RevenueSeries.Clear();
             RevenueLabels.Clear();
@@ -127,7 +169,10 @@ namespace ClinicManagement.UI.ViewModels
                 Values = values
             });
 
-            var categoryData = _statisticService.GetRevenueByCategory(StartDate, EndDate);
+            var categoryData = report
+                .GroupBy(r => r.CategoryName)
+                .Select(g => new CategoryRevenueData { CategoryName = g.Key, TotalRevenue = g.Sum(r => r.Revenue) })
+                .ToList();
             CategorySeries.Clear();
 
             foreach (var item in categoryData)
@@ -140,6 +185,28 @@ namespace ClinicManagement.UI.ViewModels
                     LabelPoint = chartPoint => $"{chartPoint.Y:N0} đ ({chartPoint.Participation:P})"
                 });
             }
+        }
+
+        private void RefreshServiceFilter()
+        {
+            var services = _unitOfWork.Services.GetAll().AsQueryable();
+            if (SelectedCategory != null)
+                services = services.Where(s => s.CategoryId == SelectedCategory.Id);
+
+            Services.Clear();
+            foreach (var service in services.OrderBy(s => s.Name))
+                Services.Add(service);
+
+            if (SelectedService != null && !Services.Any(s => s.Id == SelectedService.Id))
+                SelectedService = null;
+        }
+
+        private void ClearFilters()
+        {
+            SelectedCategory = null;
+            SelectedService = null;
+            SelectedDentist = null;
+            LoadStatistics();
         }
 
         private void ExportToExcel()
@@ -155,7 +222,7 @@ namespace ClinicManagement.UI.ViewModels
             {
                 try
                 {
-                    var data = _statisticService.GetInvoiceReport(StartDate, EndDate, null, null, null);
+                    var data = _statisticService.GetInvoiceReport(StartDate, EndDate, SelectedCategory?.Id, SelectedService?.Id, SelectedDentist?.Id);
 
                     using (var workbook = new XLWorkbook())
                     {
