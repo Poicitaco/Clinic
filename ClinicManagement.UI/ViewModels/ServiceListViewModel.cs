@@ -45,6 +45,7 @@ namespace ClinicManagement.UI.ViewModels
         public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
         public ICommand PriceHistoryCommand { get; }
+        public ICommand ToggleActiveCommand { get; }
         public ICommand AddCategoryCommand { get; }
         public ICommand EditCategoryCommand { get; }
 
@@ -59,6 +60,7 @@ namespace ClinicManagement.UI.ViewModels
             EditCommand = new RelayCommand(param => Edit(param as Service), param => param is Service || SelectedService != null);
             DeleteCommand = new RelayCommand(param => Delete(param as Service), param => param is Service || SelectedService != null);
             PriceHistoryCommand = new RelayCommand(param => OpenPriceHistory(param as Service), param => param is Service || SelectedService != null);
+            ToggleActiveCommand = new RelayCommand(param => ToggleActive(param as Service), param => param is Service || SelectedService != null);
             AddCategoryCommand = new RelayCommand(param => AddCategory());
             EditCategoryCommand = new RelayCommand(param => EditCategory());
         }
@@ -121,6 +123,26 @@ namespace ClinicManagement.UI.ViewModels
             var window = new ServicePriceHistoryWindow { DataContext = viewModel };
             window.ShowDialog();
             LoadData(); // reload in case price changed
+        }
+
+        private void ToggleActive(Service service)
+        {
+            service = service ?? SelectedService;
+            if (service == null) return;
+
+            try
+            {
+                if (service.IsActive)
+                    _serviceService.PauseService(service.Id);
+                else
+                    _serviceService.ReopenService(service.Id);
+
+                LoadData();
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void AddCategory()

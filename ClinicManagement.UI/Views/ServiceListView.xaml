@@ -62,19 +62,33 @@
                     <DataGridTemplateColumn Header="TRẠNG THÁI" Width="120">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Border Background="#D1FAE5" CornerRadius="4" Padding="8,4" HorizontalAlignment="Left" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <TextBlock Text="Đang hoạt động" Foreground="#059669" FontWeight="SemiBold" FontSize="12"/>
+                                <Border Background="#E2E8F0" CornerRadius="4" Padding="8,4" HorizontalAlignment="Left">
+                                    <TextBlock FontWeight="SemiBold" FontSize="12">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="Tạm dừng"/>
+                                                <Setter Property="Foreground" Value="#64748B"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                        <Setter Property="Text" Value="Đang hoạt động"/>
+                                                        <Setter Property="Foreground" Value="#059669"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
                                 </Border>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn Header="" Width="250">
+                    <DataGridTemplateColumn Header="" Width="330">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                     <Button Content="GIÁ" Command="{Binding DataContext.PriceHistoryCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignOutlinedButton}" Height="32" Padding="15,0" Foreground="#10B981" BorderBrush="#10B981" materialDesign:ButtonAssist.CornerRadius="6" Margin="0,0,10,0"/>
                                     <Button Content="SỬA" Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignOutlinedButton}" Height="32" Padding="15,0" Foreground="#38BDF8" BorderBrush="#38BDF8" materialDesign:ButtonAssist.CornerRadius="6" Margin="0,0,10,0"/>
+                                    <Button Content="DỪNG/MỞ" Command="{Binding DataContext.ToggleActiveCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignOutlinedButton}" Height="32" Padding="12,0" Foreground="#F59E0B" BorderBrush="#F59E0B" materialDesign:ButtonAssist.CornerRadius="6" Margin="0,0,10,0"/>
                                     <Button Content="XÓA" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignOutlinedButton}" Height="32" Padding="15,0" Foreground="#EF4444" BorderBrush="#EF4444" materialDesign:ButtonAssist.CornerRadius="6"/>
                                 </StackPanel>
                             </DataTemplate>
