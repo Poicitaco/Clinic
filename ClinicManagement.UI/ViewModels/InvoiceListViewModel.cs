@@ -61,7 +61,11 @@ namespace ClinicManagement.UI.ViewModels
 
         private void LoadData()
         {
-            Invoices = new ObservableCollection<Invoice>(_invoiceService.GetAllInvoices());
+            using (var unitOfWork = new UnitOfWork(new ClinicDbContext()))
+            {
+                var invoiceService = new InvoiceService(unitOfWork);
+                Invoices = new ObservableCollection<Invoice>(invoiceService.GetAllInvoices());
+            }
         }
 
         private void Add()

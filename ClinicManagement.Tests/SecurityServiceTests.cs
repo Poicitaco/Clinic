@@ -276,6 +276,44 @@ namespace ClinicManagement.Tests
         }
 
         [TestMethod]
+        public void AppointmentService_UpdateAppointment_UnchangedScheduleWithoutWorkShift_SavesNotes()
+        {
+            UserContext.CurrentUser = new Employee { Id = 2, Role = EmployeeRole.Receptionist };
+            var service = new AppointmentService(_fakeUow);
+            var start = DateTime.Today.AddDays(3).AddHours(13);
+            _fakeUow.Employees.Add(new Employee
+            {
+                Id = 1,
+                Role = EmployeeRole.Dentist,
+                ContractStatus = ContractStatus.Working
+            });
+            _fakeUow.Appointments.Add(new Appointment
+            {
+                Id = 1,
+                PatientName = "Nguyen Van A",
+                PhoneNumber = "0123456789",
+                DentistId = 1,
+                StartTime = start,
+                EndTime = start.AddHours(1),
+                Status = AppointmentStatus.Pending
+            });
+
+            service.UpdateAppointment(new Appointment
+            {
+                Id = 1,
+                PatientName = "Nguyen Van A",
+                PhoneNumber = "0123456789",
+                DentistId = 1,
+                StartTime = start,
+                EndTime = start.AddHours(1),
+                Status = AppointmentStatus.Pending,
+                Notes = "Cap nhat ghi chu khong doi lich"
+            });
+
+            Assert.AreEqual("Cap nhat ghi chu khong doi lich", _fakeUow.Appointments.GetById(1).Notes);
+        }
+
+        [TestMethod]
         public void AppointmentService_UpdatePastAppointment_ShouldSaveNotesAndStatus()
         {
             UserContext.CurrentUser = new Employee { Id = 2, Role = EmployeeRole.Receptionist };

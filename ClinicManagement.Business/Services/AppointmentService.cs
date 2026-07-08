@@ -47,7 +47,7 @@ namespace ClinicManagement.Business.Services
         {
             UserContext.CheckRole(EmployeeRole.Manager, EmployeeRole.Receptionist);
 
-            ValidateAppointment(appointment, allowPastStartTime: false);
+            ValidateAppointment(appointment, allowPastStartTime: false, validateSchedule: true);
             EnsureDentistIsAvailable(appointment);
             appointment.CreatedById = UserContext.CurrentUser.Id;
 
@@ -63,9 +63,16 @@ namespace ClinicManagement.Business.Services
             if (existing != null)
             {
                 var isPastAppointment = existing.StartTime < DateTime.Now;
-                ValidateAppointment(appointment, allowPastStartTime: isPastAppointment);
+                var scheduleChanged = existing.DentistId != appointment.DentistId
+                    || existing.StartTime != appointment.StartTime
+                    || existing.EndTime != appointment.EndTime;
 
-                if (!isPastAppointment)
+                ValidateAppointment(
+                    appointment,
+                    allowPastStartTime: isPastAppointment,
+                    validateSchedule: !isPastAppointment && scheduleChanged);
+
+                if (!isPastAppointment && scheduleChanged)
                     EnsureDentistIsAvailable(appointment);
 
                 existing.PatientName = appointment.PatientName;
@@ -80,7 +87,7 @@ namespace ClinicManagement.Business.Services
             }
         }
 
-        private void ValidateAppointment(Appointment appointment, bool allowPastStartTime)
+        private void ValidateAppointment(Appointment appointment, bool allowPastStartTime, bool validateSchedule)
         {
             if (string.IsNullOrWhiteSpace(appointment.PatientName))
                 throw new Exception("Tên bệnh nhân không được để trống.");
@@ -101,7 +108,7 @@ namespace ClinicManagement.Business.Services
             if (appointment.EndTime <= appointment.StartTime)
                 throw new Exception("Thời gian kết thúc phải lớn hơn thời gian bắt đầu.");
 
-            if (!allowPastStartTime)
+            if (validateSchedule)
                 EnsureDentistWorksDuring(appointment);
         }
 
