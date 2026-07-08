@@ -177,7 +177,7 @@ namespace ClinicManagement.UI.ViewModels
                         result = "Họ và tên là bắt buộc.";
                     else if (FullName.Trim().Split(' ').Length < 2)
                         result = "Họ và tên tối thiểu 2 từ.";
-                    else if (!Regex.IsMatch(FullName, @"^[\p{L}\s]+$"))
+                    else if (!Regex.IsMatch(FullName, @"^[\p{L}\s.]+$"))
                         result = "Họ và tên không được chứa số/ký tự đặc biệt.";
                 }
                 else if (columnName == nameof(DateOfBirth))

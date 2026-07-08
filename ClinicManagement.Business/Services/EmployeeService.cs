@@ -290,7 +290,7 @@ namespace ClinicManagement.Business
             var nameParts = employee.FullName.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             if (nameParts.Length < 2)
                 throw new ArgumentException("Họ và tên phải có tối thiểu 2 từ.");
-            if (!Regex.IsMatch(employee.FullName, @"^[\p{L}\s]+$"))
+            if (!Regex.IsMatch(employee.FullName, @"^[\p{L}\s.]+$"))
                 throw new ArgumentException("Họ và tên không được chứa số hoặc ký tự đặc biệt.");
 
             // Ngày sinh: đủ 18 tuổi

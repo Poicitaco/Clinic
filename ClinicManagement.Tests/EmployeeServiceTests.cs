@@ -91,6 +91,26 @@ namespace ClinicManagement.Tests
         }
 
         [TestMethod]
+        public void CreateEmployee_TitlePrefixWithDot_ShouldCreateSuccessfully()
+        {
+            var dentist = new Employee
+            {
+                FullName = "BS. Nguyen Van A",
+                DateOfBirth = new DateTime(1990, 1, 1),
+                Gender = Gender.Male,
+                PhoneNumber = "0900000123",
+                Email = "title.prefix@test.com",
+                Role = EmployeeRole.Dentist,
+                Degree = AcademicDegree.Doctor,
+                StartDate = DateTime.Today.AddYears(-1)
+            };
+
+            var created = _employeeService.CreateEmployee(dentist);
+
+            Assert.AreEqual("BS. Nguyen Van A", created.FullName);
+        }
+
+        [TestMethod]
         public void TerminateContract_Today_ShouldInactiveImmediately()
         {
             // Arrange
