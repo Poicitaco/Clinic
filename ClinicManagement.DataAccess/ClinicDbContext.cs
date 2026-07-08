@@ -2,6 +2,7 @@ using System.Data.Entity;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Infrastructure.Annotations;
 using ClinicManagement.Core;
+using MySql.Data.MySqlClient;
 
 namespace ClinicManagement.DataAccess
 {
@@ -9,7 +10,7 @@ namespace ClinicManagement.DataAccess
     {
         static ClinicDbContext()
         {
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<ClinicDbContext, ClinicManagement.DataAccess.Migrations.Configuration>());
+            Database.SetInitializer(new ClinicDatabaseInitializer());
         }
 
         public ClinicDbContext() : base("name=ClinicDbContext")
@@ -103,6 +104,101 @@ namespace ClinicManagement.DataAccess
                 .HasColumnAnnotation(
                     IndexAnnotation.AnnotationName, 
                     new IndexAnnotation(new IndexAttribute("IX_Account_Username") { IsUnique = true }));
+        }
+    }
+
+    internal class ClinicDatabaseInitializer : MigrateDatabaseToLatestVersion<ClinicDbContext, ClinicManagement.DataAccess.Migrations.Configuration>
+    {
+        private const string AppointmentNotesMigrationId = "202607080145000_AddAppointmentNotesIfMissing";
+
+        public override void InitializeDatabase(ClinicDbContext context)
+        {
+            DropLegacyAppointmentNotesColumnIfNeeded(context);
+            base.InitializeDatabase(context);
+            MarkAppointmentNotesMigrationIfNeeded(context);
+        }
+
+        private static void DropLegacyAppointmentNotesColumnIfNeeded(ClinicDbContext context)
+        {
+            using (var connection = new MySqlConnection(context.Database.Connection.ConnectionString))
+            {
+                connection.Open();
+
+                if (MigrationAlreadyApplied(connection) || AppointmentNotesAutomaticMigrationAlreadyApplied(connection) || !AppointmentNotesColumnExists(connection))
+                {
+                    return;
+                }
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "ALTER TABLE `appointments` DROP COLUMN `Notes`";
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private static bool MigrationAlreadyApplied(MySqlConnection connection)
+        {
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = @"
+                    SELECT COUNT(*)
+                    FROM `__MigrationHistory`
+                    WHERE `MigrationId` = @migrationId";
+                command.Parameters.AddWithValue("@migrationId", AppointmentNotesMigrationId);
+                return System.Convert.ToInt32(command.ExecuteScalar()) > 0;
+            }
+        }
+
+        private static bool AppointmentNotesColumnExists(MySqlConnection connection)
+        {
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = @"
+                    SELECT COUNT(*)
+                    FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_SCHEMA = DATABASE()
+                      AND TABLE_NAME = 'appointments'
+                      AND COLUMN_NAME = 'Notes'";
+                return System.Convert.ToInt32(command.ExecuteScalar()) > 0;
+            }
+        }
+
+        private static bool AppointmentNotesAutomaticMigrationAlreadyApplied(MySqlConnection connection)
+        {
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = @"
+                    SELECT COUNT(*)
+                    FROM `__MigrationHistory`
+                    WHERE `MigrationId` >= '202607080000000_AutomaticMigration'";
+                return System.Convert.ToInt32(command.ExecuteScalar()) > 0;
+            }
+        }
+
+        private static void MarkAppointmentNotesMigrationIfNeeded(ClinicDbContext context)
+        {
+            using (var connection = new MySqlConnection(context.Database.Connection.ConnectionString))
+            {
+                connection.Open();
+
+                if (MigrationAlreadyApplied(connection))
+                {
+                    return;
+                }
+
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = @"
+                        INSERT INTO `__MigrationHistory` (`MigrationId`, `ContextKey`, `Model`, `ProductVersion`)
+                        SELECT @migrationId, `ContextKey`, `Model`, `ProductVersion`
+                        FROM `__MigrationHistory`
+                        ORDER BY `MigrationId` DESC
+                        LIMIT 1";
+                    command.Parameters.AddWithValue("@migrationId", AppointmentNotesMigrationId);
+                    command.ExecuteNonQuery();
+                }
+            }
         }
     }
 }
